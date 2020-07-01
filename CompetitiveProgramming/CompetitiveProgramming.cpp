@@ -1,55 +1,110 @@
-#include <stdio.h>
-#include<string.h>
-#include <iostream>
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+
 using namespace std;
-#define LEN 100005
 
 
-
-struct pp {
-	char name[100];
-	int t;
+struct Node {
+	int key;
+	Node* prev, * next;
 };
 
-pp Q[LEN];
-int head, tail, n;
-void enqueue(pp x) {
-	Q[tail] = x;
-	tail = (tail + 1) % LEN;
+void init(Node* nil) {
+	nil->next = nil;
+	nil->prev = nil;
 }
 
-pp dequeue() {
-	pp x = Q[head];
-	head = (head + 1) % LEN;
-	return x;
+void insert(int key, Node* nil) {
+	Node *node = (Node *)malloc(sizeof(Node));
+	node->key = key;
+	node->next = nil->next;
+	nil->next->prev = node;
+	nil->next = node;
+	node->prev = nil;
 }
 
-int min(int a, int b) { return (a < b) ? a : b; }
+bool isNilOnly(Node* nil) {
+	return (nil->next == nil);
+}
+
+Node* listSearch(int key, Node* nil) {
+	Node* cur;
+	cur = nil->next;
+	while (cur != nil && cur->key != key) {
+		cur = cur->next;
+	}
+	return cur;
+}
+
+void printList(Node* nil) {
+	if (nil->next == nil) return;
+	Node* cur;
+	cur = nil->next;
+	int isFirst = 0;
+	while (cur != nil) {
+		if(isFirst > 0) printf(" ");
+		/*printf("%d", cur->key);*/
+		cout << cur->key;
+		cur = cur->next;
+		isFirst++;
+	}
+}
+
+void deleteNode(Node* t, Node* nil) {
+	if (isNilOnly(nil)) return;
+	t->next->prev = t->prev;
+	t->prev->next = t->next;
+	free(t);
+}
+
+void deleteFirst(Node *nil) {
+	deleteNode(nil->next, nil);
+}
+
+void deleteLast(Node* nil) {
+	deleteNode(nil->prev, nil);
+}
+
+void deleteNodeByKey(int key, Node* nil) {
+	if (isNilOnly(nil)) return;
+	deleteNode(listSearch(key, nil), nil);
+}
+
+void ALDS() {
+	int key, n, i;
+	int size = 0;
+	char com[20];
+	int np = 0, nd = 0;
+	Node* nil = (Node*)malloc(sizeof(Node));
+
+	scanf_s("%d", &n);
+	
+	init(nil);
+	
+	for (i = 0; i < n; i++) {
+		cin >> com >> key;
+		
+		if (com[0] == 'i') {
+			insert(key, nil); np++; size++;
+		}
+		else if(com[0] == 'd') {
+			if (strlen(com) > 6) {
+				if (com[6] == 'F') deleteFirst(nil);
+				else if (com[6] == 'L') deleteLast(nil);
+			}
+			else {
+				deleteNodeByKey(key, nil); nd++;
+			}
+			size--;
+		}
+	}
+	printList(nil);
+}
 
 int main() {
-	int elaps = 0, c;
-	int q;
-
-	cin >> n >> q;
-	pp u;
-	for (int i = 0; i < n; i++) {
-		cin >> Q[i].name >> Q[i].t;
-	}
-	head = 0;
-	tail = n;
-
-	while (head != tail) {
-		u = dequeue();
-		c = min(u.t, q);
-		u.t = u.t - c;
-		elaps += c;
-		if (u.t > 0) {
-			enqueue(u);
-		}
-		else {
-			cout << u.name << " " << elaps << endl;
-		}
-	}
-
+	ALDS();
 	return 0;
 }
+
