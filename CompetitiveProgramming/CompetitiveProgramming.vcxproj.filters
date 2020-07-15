@@ -42,5 +42,11 @@
     <ClCompile Include="ALDS1_3_B.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ALDS1_3_C.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ALDS1_3_D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
